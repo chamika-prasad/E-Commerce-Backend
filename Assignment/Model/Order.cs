@@ -19,7 +19,7 @@ namespace Models
     public enum OrderState
     {
         Pending,
-        Purchase,
+        Decline,
         Completed
     }
 }
