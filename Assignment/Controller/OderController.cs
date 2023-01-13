@@ -1,11 +1,14 @@
 ﻿using Assignment.Interface;
 using Assignment.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class OderController : ControllerBase
     {
         private readonly IOrderService _IOrderService;
@@ -17,7 +20,7 @@ namespace Assignment.Controller
 
         //place order by customer
 
-        [HttpPost("PlaceOrder/{productId}")]
+        [HttpPost("PlaceOrder/{productId}"), AllowAnonymous]
         public IActionResult PlaceOrders(int productId, OrderRequest request)
         {
 

@@ -1,11 +1,14 @@
 ﻿using Assignment.Interface;
 using Assignment.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class ProductCategoryController : ControllerBase
     {
         private readonly IProductCategoryService _IProductCategoryService;
@@ -17,7 +20,7 @@ namespace Assignment.Controller
 
         //Get Productcategory
 
-        [HttpGet("GetProductcategory/{categoryId}")]
+        [HttpGet("GetProductcategory/{categoryId}"), AllowAnonymous]
         public IActionResult GetProductcategory(int categoryId) 
         {
             var response = _IProductCategoryService.SelectProductcategory(categoryId);
@@ -27,7 +30,7 @@ namespace Assignment.Controller
 
         //Get Productcategories
 
-        [HttpGet("GetAllProductcategories")]
+        [HttpGet("GetAllProductcategories"), AllowAnonymous]
         public IActionResult GetAllProductcategories()
         {
             var response = _IProductCategoryService.GetAllProductcategories();
