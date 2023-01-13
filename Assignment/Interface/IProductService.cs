@@ -8,9 +8,9 @@ namespace Assignment.Interface
     {
         public List<Product> GetAllProduct();
         public ProductErrorResponseHandler SaveProduct(ProductRequest request);
-        public Product SelectProduct(int id);
-        public ProductErrorResponseHandler UpdateProduct(int id, UpdateProductRequest request);
-        public ProductErrorResponseHandler DeleteProduct(int id);
+        public Product SelectProduct(int productId);
+        public ProductErrorResponseHandler UpdateProduct(int productId, UpdateProductRequest request);
+        public ProductErrorResponseHandler DeleteProduct(int productId);
         public List<Product> SearchProduct(SearchProductRequest request);
     }
 }

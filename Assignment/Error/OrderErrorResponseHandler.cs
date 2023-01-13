@@ -1,4 +1,4 @@
-﻿using Models;
+﻿using Assignment.Model;
 
 namespace Assignment.Error
 {
@@ -6,7 +6,7 @@ namespace Assignment.Error
     {
         public bool State { get; set; }
         public string Name { get; set; }
-        public Order Detail { get; set; }
+        public NewOrder Detail { get; set; }
         public string Message { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assignment.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,6 @@ namespace Models
         public int stock { get; set; }
         public int categoryId { get; set; }
         public Category category { get; set; }
-        public ICollection<ProductOrder> productorders { get; set; }
+        public ICollection<NewOrder> neworders { get; set; }
     }
 }

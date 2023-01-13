@@ -2,10 +2,7 @@
 using Assignment.Interface;
 using Assignment.Request;
 using DataAccess;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Models;
-using System.Diagnostics;
 
 namespace Assignment.Service
 {
@@ -31,6 +28,14 @@ namespace Assignment.Service
             if (_context.Products.Any(p => p.name == request.name && p.categoryId == request.categoryId))
             {
                 _response = SetResponse(false, "Product already exists in the category", request.name, null);
+                return _response;
+            }
+
+            var categary = _context.Categories.Any(c => c.categoryId == request.categoryId);
+
+            if (categary == false)
+            {
+                _response = SetResponse(false, "Category not valid", request.name, null);
                 return _response;
             }
 
@@ -63,18 +68,18 @@ namespace Assignment.Service
 
         //Select Product by Id 
 
-        public Product SelectProduct(int id)
+        public Product SelectProduct(int productId)
         {
-            return _context.Products.Find(id);
+            return _context.Products.Find(productId);
 
         }
 
         //Update Product
 
-        public ProductErrorResponseHandler UpdateProduct(int id, UpdateProductRequest request)
+        public ProductErrorResponseHandler UpdateProduct(int productId, UpdateProductRequest request)
         {
 
-            var product = SelectProduct(id);
+            var product = SelectProduct(productId);
 
             if (request.updateName == null && request.updateDescription == null && request.updateStock == null && request.updateCategoryId == null)
             {
@@ -121,13 +126,22 @@ namespace Assignment.Service
                     _response = SetResponse(false, "Product already exists in the category", request.updateName, null);
                     return _response;
                 }
+
+                var category = _context.Categories.Any(c => c.categoryId == request.updateCategoryId);
+
+                if (category == false)
+                {
+                    _response = SetResponse(false, "Category not valid", null, null);
+                    return _response;
+                }
+
                 product.categoryId = request.updateCategoryId;
             }
 
             _context.Products.Update(product);
             _context.SaveChangesAsync();
 
-            product = SelectProduct(id);
+            product = SelectProduct(productId);
 
             _response = SetResponse(true, "Category updated successfully", "Updated", product);
             return _response;
@@ -136,9 +150,9 @@ namespace Assignment.Service
 
         //Delete Product
 
-        public ProductErrorResponseHandler DeleteProduct(int id)
+        public ProductErrorResponseHandler DeleteProduct(int productId)
         {
-            var product = SelectProduct(id);
+            var product = SelectProduct(productId);
 
             try
             {

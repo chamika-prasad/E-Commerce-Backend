@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DataAccess.Migrations
+namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230105132834_initial")]
-    partial class initial
+    [Migration("20230111140021_new")]
+    partial class @new
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,39 @@ namespace DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("state")
+                        .HasColumnType("int");
+
+                    b.Property<string>("userEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("productId");
+
+                    b.HasIndex("userEmail");
+
+                    b.ToTable("NewOrders");
+                });
 
             modelBuilder.Entity("Models.Category", b =>
                 {
@@ -44,34 +77,6 @@ namespace DataAccess.Migrations
                     b.HasKey("categoryId");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("Models.Order", b =>
-                {
-                    b.Property<int>("orderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("orderId"));
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("state")
-                        .HasColumnType("int");
-
-                    b.Property<int>("useremail")
-                        .HasColumnType("int");
-
-                    b.HasKey("orderId");
-
-                    b.HasIndex("useremail");
-
-                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Models.Product", b =>
@@ -103,36 +108,10 @@ namespace DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Models.ProductOrder", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("orderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("orderId");
-
-                    b.HasIndex("productId");
-
-                    b.ToTable("ProductOrders");
-                });
-
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Property<int>("email")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("email"));
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("isAdmin")
                         .HasColumnType("bit");
@@ -150,15 +129,23 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
                 {
-                    b.HasOne("Models.User", "user")
-                        .WithMany("orders")
-                        .HasForeignKey("useremail")
+                    b.HasOne("Models.Product", "product")
+                        .WithMany("neworders")
+                        .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("user");
+                    b.HasOne("Models.User", "User")
+                        .WithMany("neworders")
+                        .HasForeignKey("userEmail")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("product");
                 });
 
             modelBuilder.Entity("Models.Product", b =>
@@ -172,43 +159,19 @@ namespace DataAccess.Migrations
                     b.Navigation("category");
                 });
 
-            modelBuilder.Entity("Models.ProductOrder", b =>
-                {
-                    b.HasOne("Models.Order", "Order")
-                        .WithMany("productorders")
-                        .HasForeignKey("orderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Product", "product")
-                        .WithMany("productorders")
-                        .HasForeignKey("productId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("product");
-                });
-
             modelBuilder.Entity("Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
-                {
-                    b.Navigation("productorders");
-                });
-
             modelBuilder.Entity("Models.Product", b =>
                 {
-                    b.Navigation("productorders");
+                    b.Navigation("neworders");
                 });
 
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Navigation("orders");
+                    b.Navigation("neworders");
                 });
 #pragma warning restore 612, 618
         }

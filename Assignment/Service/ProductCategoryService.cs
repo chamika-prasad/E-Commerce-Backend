@@ -57,10 +57,10 @@ namespace Assignment.Service
 
         //Update Category
 
-        public CategoryErrorResponseHandler UpdateCategory(int id, UpdateProductCategoryRequest request)
+        public CategoryErrorResponseHandler UpdateCategory(int categoryId, UpdateProductCategoryRequest request)
         {
 
-            var productcatergory = SelectProductcategory(id);
+            var productcatergory = SelectProductcategory(categoryId);
 
             if (request.updateName == null && request.updateDescription == null)
             {
@@ -68,8 +68,18 @@ namespace Assignment.Service
                 return _response;
 
             }
-            
-            if(request.updateName != null)
+
+            if (_context.Categories.Any(c => c.name == request.updateName))
+            {
+                if(productcatergory.name != request.updateName)
+                {
+                    _response = SetResponse(false, "Category already exists", request.updateName, null);
+                    return _response;
+                }
+               
+            }
+
+            if (request.updateName != null)
             {
                 productcatergory.name = request.updateName;
             }
@@ -82,7 +92,7 @@ namespace Assignment.Service
             _context.Categories.Update(productcatergory);
             _context.SaveChangesAsync();
 
-            productcatergory = SelectProductcategory(id);
+            productcatergory = SelectProductcategory(categoryId);
 
             _response = SetResponse(true, "Category updated successfully", "Updated", productcatergory);
             return _response;
@@ -91,9 +101,9 @@ namespace Assignment.Service
 
         //Delete Product Category
 
-        public CategoryErrorResponseHandler DeleteCategory(int id)
+        public CategoryErrorResponseHandler DeleteCategory(int categoryId)
         {
-            var productcatergory = SelectProductcategory(id);
+            var productcatergory = SelectProductcategory(categoryId);
 
             try 
             {
@@ -112,9 +122,9 @@ namespace Assignment.Service
 
         //Search ProductCategory by Id 
 
-        public Category SelectProductcategory(int id)
+        public Category SelectProductcategory(int categoryId)
         {
-            return _context.Categories.Find(id);
+            return _context.Categories.Find(categoryId);
 
         }
 
