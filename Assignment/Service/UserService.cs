@@ -1,20 +1,12 @@
 ﻿using Assignment.Error;
 using Assignment.Interface;
 using Assignment.Request;
-using Azure;
 using DataAccess;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Models;
-using ServiceStack.Auth;
-using ServiceStack.Messaging;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+
 
 namespace Assignment.Service
 {
@@ -27,15 +19,6 @@ namespace Assignment.Service
         {
             _context = context;
             _configuration = configuration;
-        }
-
-
-        //Get user
-        public User GetUser(UserRequest request)
-        {
-            var user = _context.Users.Where(u => u.email == request.email).FirstOrDefault();
-
-            return user;
         }
 
 
@@ -175,17 +158,13 @@ namespace Assignment.Service
             return jwt;
         }
 
+        //Get user
+        public User GetUser(UserRequest request)
+        {
+            var user = _context.Users.Where(u => u.email == request.email).FirstOrDefault();
 
-        //Create Token
-
-        /* private static string SetToken(string email, string password)
-         {
-             var mySecretString = email + password;
-
-             return Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(mySecretString)));
-         }*/
-
-        //Set Response
+            return user;
+        }
 
         private UserErrorResponseHandler SetResponse(bool state,string message,string user,User detail)
         {

@@ -1,10 +1,14 @@
 ﻿using Assignment.Error;
+using Assignment.Model;
 using Assignment.Request;
 
 namespace Assignment.Interface
 {
     public interface IOrderService
     {
-        public DateTime PlaceOrder(int id, OrderRequest request);
+        public OrderErrorResponseHandler PlaceOrder(int productId, OrderRequest request);
+        public OrderErrorResponseHandler UpdateOrderState(int orderId, string orderState);
+        public List<NewOrder> GetAllOrders();
+
     }
 }

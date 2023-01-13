@@ -4,16 +4,19 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DataAccess.Migrations
+namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230111101441_newmigration2")]
+    partial class newmigration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,23 @@ namespace DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NewProductOrders");
+                });
 
             modelBuilder.Entity("Models.Category", b =>
                 {
@@ -51,22 +71,15 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("orderId"));
 
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("state")
-                        .HasColumnType("int");
-
-                    b.Property<int>("useremail")
-                        .HasColumnType("int");
+                    b.Property<string>("transactionid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("orderId");
-
-                    b.HasIndex("useremail");
 
                     b.ToTable("Orders");
                 });
@@ -108,6 +121,9 @@ namespace DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("NewOrderId")
+                        .HasColumnType("int");
+
                     b.Property<int>("orderId")
                         .HasColumnType("int");
 
@@ -115,6 +131,8 @@ namespace DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("NewOrderId");
 
                     b.HasIndex("orderId");
 
@@ -125,11 +143,8 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Property<int>("email")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("email"));
+                    b.Property<string>("email")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("isAdmin")
                         .HasColumnType("bit");
@@ -147,17 +162,6 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
-                {
-                    b.HasOne("Models.User", "user")
-                        .WithMany("orders")
-                        .HasForeignKey("useremail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
-                });
-
             modelBuilder.Entity("Models.Product", b =>
                 {
                     b.HasOne("Models.Category", "category")
@@ -171,6 +175,10 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("Models.ProductOrder", b =>
                 {
+                    b.HasOne("Assignment.Model.NewOrder", null)
+                        .WithMany("ProductOrders")
+                        .HasForeignKey("NewOrderId");
+
                     b.HasOne("Models.Order", "Order")
                         .WithMany("productorders")
                         .HasForeignKey("orderId")
@@ -188,6 +196,11 @@ namespace DataAccess.Migrations
                     b.Navigation("product");
                 });
 
+            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
+                {
+                    b.Navigation("ProductOrders");
+                });
+
             modelBuilder.Entity("Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -201,11 +214,6 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("Models.Product", b =>
                 {
                     b.Navigation("productorders");
-                });
-
-            modelBuilder.Entity("Models.User", b =>
-                {
-                    b.Navigation("orders");
                 });
 #pragma warning restore 612, 618
         }

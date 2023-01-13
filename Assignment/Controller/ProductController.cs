@@ -12,10 +12,10 @@ namespace Assignment.Controller
     //[Authorize(Roles = "Admin")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _context;
-        public ProductController(IProductService context) 
+        private readonly IProductService _IProductService;
+        public ProductController(IProductService IProductService) 
         {
-            _context = context;
+            _IProductService = IProductService;
         }
 
         //Get All Products
@@ -23,7 +23,7 @@ namespace Assignment.Controller
         [HttpGet("GetAllProducts")]
         public IActionResult GetAllProducts()
         {
-            var response = _context.GetAllProduct();
+            var response = _IProductService.GetAllProduct();
 
             return response.Count == 0 ? BadRequest("No any Product") : Ok(response);
         }
@@ -31,39 +31,39 @@ namespace Assignment.Controller
         //Add Product
 
         [HttpPost("AddProduct")]
-        public IActionResult AddProductCategory(ProductRequest request)
+        public IActionResult AddProduct(ProductRequest request)
         {
-            var response = _context.SaveProduct(request);
+            var response = _IProductService.SaveProduct(request);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }
 
         //Get Product
 
-        [HttpGet("GetProduct/{id}")]
-        public IActionResult GetProduct(int id)
+        [HttpGet("GetProduct/{productId}")]
+        public IActionResult GetProduct(int productId)
         {
-            var response = _context.SelectProduct(id);
+            var response = _IProductService.SelectProduct(productId);
 
             return Ok(response);
         }
 
         //Update Product
 
-        [HttpPut("UpdateProduct/{id}")]
-        public IActionResult UpdatProduct(int id, UpdateProductRequest request)
+        [HttpPut("UpdateProduct/{productId}")]
+        public IActionResult UpdatProduct(int productId, UpdateProductRequest request)
         {
-            var response = _context.UpdateProduct(id, request);
+            var response = _IProductService.UpdateProduct(productId, request);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }
 
         //Delete Product
 
-        [HttpDelete("DeleteProduct/{id}")]
-        public IActionResult DeleteProduct(int id)
+        [HttpDelete("DeleteProduct/{productId}")]
+        public IActionResult DeleteProduct(int productId)
         {
-            var response = _context.DeleteProduct(id);
+            var response = _IProductService.DeleteProduct(productId);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }
@@ -71,11 +71,17 @@ namespace Assignment.Controller
         //Search Product by product name or category name
 
         [HttpPost("SearchProduct")]
-        public IActionResult SearchProduct(SearchProductRequest request)
+        public IActionResult SearchProducts(SearchProductRequest request)
         {
-             var response = _context.SearchProduct(request);
+            var _object = new 
+            {
+                state = false,
+                message = "Product is not existed",
+            };
 
-            return response.Count == 0 ? BadRequest("Product is not existed") : Ok(response);
+            var response = _IProductService.SearchProduct(request);
+
+            return response.Count == 0 ? BadRequest(_object) : Ok(response);
         }
     }
 }

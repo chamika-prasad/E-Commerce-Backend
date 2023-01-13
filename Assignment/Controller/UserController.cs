@@ -1,13 +1,6 @@
-﻿using Assignment.Error;
-using Assignment.Interface;
+﻿using Assignment.Interface;
 using Assignment.Request;
-using DataAccess;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Models;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Assignment.Controller
 {
@@ -15,21 +8,21 @@ namespace Assignment.Controller
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserService _context;
+        private readonly IUserService _IUserService;
         
-        public UserController(IUserService context)
+        public UserController(IUserService IUserService)
         {
-            _context = context;
+            _IUserService = IUserService;
         }
 
         //User Registration
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
 
         public IActionResult Register(UserRequest request)
         {
 
-            var response = _context.UserRegistration(request);  
+            var response = _IUserService.UserRegistration(request);  
 
             return response.State == false ? BadRequest(response) : Ok(response);
 
@@ -37,12 +30,12 @@ namespace Assignment.Controller
 
         //User Login
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
 
         public IActionResult Login(UserRequest request)
         {
 
-            var response = _context.UserLoging(request);
+            var response = _IUserService.UserLoging(request);
 
             return response.State == false ? BadRequest(response) : Ok(response);
 

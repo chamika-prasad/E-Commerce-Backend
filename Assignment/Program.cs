@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+
+var _loggrer = new LoggerConfiguration()
+.WriteTo.File("C:\\Users\\User\\Desktop\\Aventude\\Assignment\\Logs\\ApiLog-.log", rollingInterval:RollingInterval.Day)
+.CreateLogger();
+builder.Logging.AddSerilog(_loggrer);
+
 
 var app = builder.Build();
 

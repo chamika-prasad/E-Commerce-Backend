@@ -7,10 +7,10 @@ namespace Assignment.Interface
     public interface IProductCategoryService
     {
         public CategoryErrorResponseHandler SaveCategory(ProductCategoryRequest request);
-        public CategoryErrorResponseHandler UpdateCategory(int id, UpdateProductCategoryRequest request);
-        public Category SelectProductcategory(int id);
+        public CategoryErrorResponseHandler UpdateCategory(int categoryId, UpdateProductCategoryRequest request);
+        public Category SelectProductcategory(int categoryId);
         public List<Category> GetAllProductcategories();
-        public CategoryErrorResponseHandler DeleteCategory(int id);
+        public CategoryErrorResponseHandler DeleteCategory(int categoryId);
 
 
     }

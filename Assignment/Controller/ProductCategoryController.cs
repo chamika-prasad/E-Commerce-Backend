@@ -1,8 +1,6 @@
 ﻿using Assignment.Interface;
 using Assignment.Request;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Assignment.Controller
 {
@@ -10,19 +8,19 @@ namespace Assignment.Controller
     [ApiController]
     public class ProductCategoryController : ControllerBase
     {
-        private readonly IProductCategoryService _context;
+        private readonly IProductCategoryService _IProductCategoryService;
 
-        public ProductCategoryController(IProductCategoryService context)
+        public ProductCategoryController(IProductCategoryService IProductCategoryService)
         {
-            _context = context;
+            _IProductCategoryService = IProductCategoryService;
         }
 
         //Get Productcategory
 
-        [HttpGet("GetProductcategory/{id}")]
-        public IActionResult GetProductcategory(int id) 
+        [HttpGet("GetProductcategory/{categoryId}")]
+        public IActionResult GetProductcategory(int categoryId) 
         {
-            var response = _context.SelectProductcategory(id);
+            var response = _IProductCategoryService.SelectProductcategory(categoryId);
 
             return Ok(response);
         }
@@ -32,7 +30,7 @@ namespace Assignment.Controller
         [HttpGet("GetAllProductcategories")]
         public IActionResult GetAllProductcategories()
         {
-            var response = _context.GetAllProductcategories();
+            var response = _IProductCategoryService.GetAllProductcategories();
 
             return Ok(response);
         }
@@ -42,27 +40,27 @@ namespace Assignment.Controller
         [HttpPost("AddProductCategory")]
         public IActionResult AddProductCategory(ProductCategoryRequest request)
         {
-            var response = _context.SaveCategory(request);
+            var response = _IProductCategoryService.SaveCategory(request);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }
 
         //Update ProductCategory
 
-        [HttpPut("UpdateProductCategory/{id}")]
-        public IActionResult UpdatProductCategory(int id, UpdateProductCategoryRequest request)
+        [HttpPut("UpdateProductCategory/{categoryId}")]
+        public IActionResult UpdatProductCategory(int categoryId, UpdateProductCategoryRequest request)
         {
-            var response = _context.UpdateCategory(id,request);
+            var response = _IProductCategoryService.UpdateCategory(categoryId, request);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }
 
         //Delete Productcategory
 
-        [HttpDelete("DeleteProductcategory/{id}")]
-        public IActionResult DeleteProductcategory(int id)
+        [HttpDelete("DeleteProductcategory/{categoryId}")]
+        public IActionResult DeleteProductcategory(int categoryId)
         {
-            var response = _context.DeleteCategory(id);
+            var response = _IProductCategoryService.DeleteCategory(categoryId);
 
             return response.State == false ? BadRequest(response) : Ok(response);
         }

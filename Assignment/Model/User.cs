@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assignment.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Models
         public string password { get; set; }
         public bool isAdmin { get; set; }
         public string token { get; set; }
+        public virtual ICollection<NewOrder> neworders { get; set; }
 
     }
 }
