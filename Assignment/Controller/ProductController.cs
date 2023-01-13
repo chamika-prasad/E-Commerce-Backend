@@ -9,7 +9,7 @@ namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _IProductService;
@@ -20,7 +20,7 @@ namespace Assignment.Controller
 
         //Get All Products
 
-        [HttpGet("GetAllProducts")]
+        [HttpGet("GetAllProducts"), AllowAnonymous]
         public IActionResult GetAllProducts()
         {
             var response = _IProductService.GetAllProduct();
@@ -40,7 +40,7 @@ namespace Assignment.Controller
 
         //Get Product
 
-        [HttpGet("GetProduct/{productId}")]
+        [HttpGet("GetProduct/{productId}"), AllowAnonymous]
         public IActionResult GetProduct(int productId)
         {
             var response = _IProductService.SelectProduct(productId);
@@ -70,7 +70,7 @@ namespace Assignment.Controller
 
         //Search Product by product name or category name
 
-        [HttpPost("SearchProduct")]
+        [HttpPost("SearchProduct"), AllowAnonymous]
         public IActionResult SearchProducts(SearchProductRequest request)
         {
             var _object = new 
