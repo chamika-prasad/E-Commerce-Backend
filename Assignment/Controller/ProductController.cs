@@ -9,7 +9,7 @@ namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _IProductService;
@@ -20,7 +20,8 @@ namespace Assignment.Controller
 
         //Get All Products
 
-        [HttpGet("GetAllProducts"), AllowAnonymous]
+        [HttpGet("GetAllProducts")]
+       // [Authorize(Roles = "Admin || Customer")]
         public IActionResult GetAllProducts()
         {
             var response = _IProductService.GetAllProduct();
@@ -31,6 +32,7 @@ namespace Assignment.Controller
         //Add Product
 
         [HttpPost("AddProduct")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddProduct(ProductRequest request)
         {
             var response = _IProductService.SaveProduct(request);
@@ -40,7 +42,8 @@ namespace Assignment.Controller
 
         //Get Product
 
-        [HttpGet("GetProduct/{productId}"), AllowAnonymous]
+        [HttpGet("GetProduct/{productId}")]
+       // [Authorize(Roles = "Admin || Customer")]
         public IActionResult GetProduct(int productId)
         {
             var response = _IProductService.SelectProduct(productId);
@@ -51,6 +54,7 @@ namespace Assignment.Controller
         //Update Product
 
         [HttpPut("UpdateProduct/{productId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdatProduct(int productId, UpdateProductRequest request)
         {
             var response = _IProductService.UpdateProduct(productId, request);
@@ -61,6 +65,7 @@ namespace Assignment.Controller
         //Delete Product
 
         [HttpDelete("DeleteProduct/{productId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteProduct(int productId)
         {
             var response = _IProductService.DeleteProduct(productId);
@@ -70,7 +75,8 @@ namespace Assignment.Controller
 
         //Search Product by product name or category name
 
-        [HttpPost("SearchProduct"), AllowAnonymous]
+        [HttpPost("SearchProduct")]
+       // [Authorize(Roles = "Admin || Customer")]
         public IActionResult SearchProducts(SearchProductRequest request)
         {
             var _object = new 

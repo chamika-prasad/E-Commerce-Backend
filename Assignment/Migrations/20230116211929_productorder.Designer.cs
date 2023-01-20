@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230116211929_productorder")]
+    partial class productorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,33 +24,6 @@ namespace Assignment.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Assignment.Model.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("userEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("userEmail");
-
-                    b.ToTable("Cart");
-                });
 
             modelBuilder.Entity("Assignment.Model.NewOrder", b =>
                 {
@@ -60,6 +36,12 @@ namespace Assignment.Migrations
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
                     b.Property<int>("state")
                         .HasColumnType("int");
 
@@ -69,32 +51,11 @@ namespace Assignment.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("productId");
+
                     b.HasIndex("userEmail");
 
                     b.ToTable("NewOrders");
-                });
-
-            modelBuilder.Entity("Assignment.Model.OrderProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("OrderProducts");
                 });
 
             modelBuilder.Entity("Models.Category", b =>
@@ -168,27 +129,14 @@ namespace Assignment.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Assignment.Model.Cart", b =>
-                {
-                    b.HasOne("Models.Product", "Product")
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("userEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Assignment.Model.NewOrder", b =>
                 {
+                    b.HasOne("Models.Product", "product")
+                        .WithMany("neworders")
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Models.User", "User")
                         .WithMany("neworders")
                         .HasForeignKey("userEmail")
@@ -196,25 +144,8 @@ namespace Assignment.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
 
-            modelBuilder.Entity("Assignment.Model.OrderProduct", b =>
-                {
-                    b.HasOne("Assignment.Model.NewOrder", "Order")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Product", "Product")
-                        .WithMany("OrderProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Product");
+                    b.Navigation("product");
                 });
 
             modelBuilder.Entity("Models.Product", b =>
@@ -228,11 +159,6 @@ namespace Assignment.Migrations
                     b.Navigation("category");
                 });
 
-            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
-                {
-                    b.Navigation("OrderProducts");
-                });
-
             modelBuilder.Entity("Models.Category", b =>
                 {
                     b.Navigation("Products");
@@ -240,15 +166,11 @@ namespace Assignment.Migrations
 
             modelBuilder.Entity("Models.Product", b =>
                 {
-                    b.Navigation("Carts");
-
-                    b.Navigation("OrderProducts");
+                    b.Navigation("neworders");
                 });
 
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Navigation("Carts");
-
                     b.Navigation("neworders");
                 });
 #pragma warning restore 612, 618
