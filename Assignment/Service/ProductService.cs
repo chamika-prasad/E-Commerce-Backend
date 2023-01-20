@@ -143,7 +143,7 @@ namespace Assignment.Service
 
             product = SelectProduct(productId);
 
-            _response = SetResponse(true, "Category updated successfully", "Updated", product);
+            _response = SetResponse(true, "Product updated successfully", "Updated", product);
             return _response;
 
         }

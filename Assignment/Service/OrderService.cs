@@ -2,7 +2,11 @@
 using Assignment.Interface;
 using Assignment.Model;
 using Assignment.Request;
+using Azure.Core;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Assignment.Service
 {
@@ -17,10 +21,10 @@ namespace Assignment.Service
             _context = context;
         }
 
-        //place order
-        public OrderErrorResponseHandler PlaceOrder(int productId, OrderRequest request)
-        {
+        //place order directly
 
+        public OrderErrorResponseHandler PlaceOrdersDirect(int productId, OrderRequest request)
+        {
             var stock = _context.Products.Where(p => p.productId == productId).Select(p => p.stock).FirstOrDefault();
 
             stock = stock - request.quantity;
@@ -30,21 +34,33 @@ namespace Assignment.Service
                 _response = SetResponse(false, "Quantity exceed stock", null, null);
                 return _response;
             }
+
             var date = DateTime.Now;
 
             var order = new NewOrder
             {
                 date = date,
                 userEmail = request.userEmail,
-                productId = productId,
-                quantity = request.quantity,
                 state = State.Pending,
             };
 
             _context.NewOrders.Add(order);
             _context.SaveChangesAsync();
 
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
+
+            var oderId = _context.NewOrders.Where(o => o.date == date && o.userEmail == request.userEmail && o.state == State.Pending).Select(o => o.Id).FirstOrDefault();
+
+            var orderproduct = new OrderProduct
+            {
+                ProductId = productId,
+                OrderId = oderId,
+            };
+
+            _context.OrderProducts.Add(orderproduct);
+            _context.SaveChangesAsync();
+
+            Thread.Sleep(2000);
 
             //update stock
 
@@ -56,6 +72,125 @@ namespace Assignment.Service
             _context.SaveChangesAsync();
 
             _response = SetResponse(true, "Order placed successful", null, null);
+            return _response;
+        }
+
+        //place order using cart
+        public OrderErrorResponseHandler PlaceOrdersByCart(List<int> cartIds, string userEmail)
+        {
+
+            var date = DateTime.Now;
+            var order = new NewOrder 
+            { 
+                 date = date,
+                 userEmail = userEmail,
+                 state = State.Pending
+            };
+
+            _context.NewOrders.Add(order);
+            _context.SaveChangesAsync();
+
+            Thread.Sleep(1000);
+
+            var oderId = _context.NewOrders.Where(o => o.date == date && o.userEmail == userEmail && o.state == State.Pending).Select(o => o.Id).FirstOrDefault();
+
+
+            List<Cart> productsList = _context.Cart.Where(c => cartIds.Contains(c.Id)).ToList();    
+
+
+            if (productsList.Count > 0)
+            {
+                foreach (var product in productsList)
+                {
+
+                    var stock = _context.Products.Where(p => p.productId == product.ProductId).Select(p => p.stock).FirstOrDefault();
+
+                    if(product.quantity > stock)
+                    {
+                        _response = SetResponse(true, "Quantity exeed stock", null, null);
+                        return _response;
+                    }
+
+                    Thread.Sleep(500);
+
+                }
+
+            }
+
+
+            if (productsList.Count > 0)
+            {
+                foreach (var productItem in productsList)
+                {
+
+                    var orderproduct = new OrderProduct
+                    {
+                        ProductId= productItem.ProductId,
+                        OrderId= oderId,
+                    };
+
+                    _context.OrderProducts.Add(orderproduct);
+                    _context.SaveChangesAsync();
+                    Thread.Sleep(3000);
+
+                    var stock = _context.Products.Where(p => p.productId == productItem.ProductId).Select(p => p.stock).FirstOrDefault();
+
+                    stock = stock - productItem.quantity;
+
+                    //update stock
+
+                    var product = _context.Products.Find(productItem.ProductId);
+
+                    product.stock = stock;
+
+                    _context.Products.Update(product);
+                    _context.SaveChangesAsync();
+
+                    Thread.Sleep(3000);
+
+                    var cart = _context.Cart.Find(productItem.Id); ;
+                    _context.Cart.Remove(cart);
+                    _context.SaveChangesAsync();
+                    Thread.Sleep(2000);
+                }
+
+                _response = SetResponse(true, "Order placed successful", null, null);
+
+            }
+            else
+            {
+                _response = SetResponse(false, "Cart is empty", null, null);
+            }
+
+           
+            return _response;
+
+        }
+
+
+        //Add to cart
+
+        public OrderErrorResponseHandler AddToCart(int productId, string userEmail, int quantity)
+        {
+            var stock = _context.Products.Where(p => p.productId == productId).Select(p => p.stock).FirstOrDefault();
+
+            if(stock < quantity)
+            {
+                _response = SetResponse(false, "Quantity exeed stock", null, null);
+                return _response;
+            }
+
+            var item = new Cart
+            {
+                ProductId= productId,
+                userEmail= userEmail,
+                quantity= quantity
+            };
+
+            _context.Cart.Add(item);
+            _context.SaveChangesAsync();
+            Thread.Sleep(1000);
+            _response = SetResponse(true, "Item added to cart successfully", null, null);
             return _response;
 
         }

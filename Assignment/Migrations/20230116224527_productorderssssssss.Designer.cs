@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230116224527_productorderssssssss")]
+    partial class productorderssssssss
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,7 +204,7 @@ namespace Assignment.Migrations
             modelBuilder.Entity("Assignment.Model.OrderProduct", b =>
                 {
                     b.HasOne("Assignment.Model.NewOrder", "Order")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -226,11 +229,6 @@ namespace Assignment.Migrations
                         .IsRequired();
 
                     b.Navigation("category");
-                });
-
-            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
-                {
-                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("Models.Category", b =>

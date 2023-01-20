@@ -20,7 +20,9 @@ namespace Assignment.Controller
 
         //Get Productcategory
 
-        [HttpGet("GetProductcategory/{categoryId}"), AllowAnonymous]
+
+        [HttpGet("GetProductcategory/{categoryId}")]
+       // [Authorize(Roles = "Admin || Customer")]
         public IActionResult GetProductcategory(int categoryId) 
         {
             var response = _IProductCategoryService.SelectProductcategory(categoryId);
@@ -30,7 +32,8 @@ namespace Assignment.Controller
 
         //Get Productcategories
 
-        [HttpGet("GetAllProductcategories"), AllowAnonymous]
+        [HttpGet("GetAllProductcategories")]
+       // [Authorize(Roles = "Admin || Customer")]
         public IActionResult GetAllProductcategories()
         {
             var response = _IProductCategoryService.GetAllProductcategories();
@@ -41,6 +44,7 @@ namespace Assignment.Controller
         //Add ProductCategory
 
         [HttpPost("AddProductCategory")]
+        [Authorize(Roles = "Admin")]
         public IActionResult AddProductCategory(ProductCategoryRequest request)
         {
             var response = _IProductCategoryService.SaveCategory(request);
@@ -51,6 +55,7 @@ namespace Assignment.Controller
         //Update ProductCategory
 
         [HttpPut("UpdateProductCategory/{categoryId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdatProductCategory(int categoryId, UpdateProductCategoryRequest request)
         {
             var response = _IProductCategoryService.UpdateCategory(categoryId, request);
@@ -61,6 +66,7 @@ namespace Assignment.Controller
         //Delete Productcategory
 
         [HttpDelete("DeleteProductcategory/{categoryId}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteProductcategory(int categoryId)
         {
             var response = _IProductCategoryService.DeleteCategory(categoryId);

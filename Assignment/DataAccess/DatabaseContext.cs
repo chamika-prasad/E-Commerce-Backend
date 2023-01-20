@@ -16,7 +16,7 @@ namespace DataAccess
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<NewOrder> NewOrders { get; set; }
-
-
+        public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<Cart> Cart { get; set; }
     }
 }

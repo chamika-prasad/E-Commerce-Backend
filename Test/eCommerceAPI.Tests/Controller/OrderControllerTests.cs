@@ -41,10 +41,10 @@ namespace eCommerceAPI.Tests.Controller
 
             var responseMock = _fixture.Build<OrderErrorResponseHandler>().With(p => p.State, true).Create();
 
-            _serviceMock.Setup(x => x.PlaceOrder(10,request)).Returns(responseMock);
+            _serviceMock.Setup(x => x.PlaceOrdersDirect(10,request)).Returns(responseMock);
 
             //Act
-            var result = _sut.PlaceOrders(10,request);
+            var result = _sut.PlaceOrdersDirectly(10,request);
             OkObjectResult okResult = result as OkObjectResult;
 
             //Assert
@@ -52,7 +52,7 @@ namespace eCommerceAPI.Tests.Controller
             result.Should().BeAssignableTo<OkObjectResult>();
             result.GetType().Should().Be(typeof(OkObjectResult));
             Assert.Equal(200, okResult.StatusCode);
-            _serviceMock.Verify(x => x.PlaceOrder(10,request),Times.Once);
+            _serviceMock.Verify(x => x.PlaceOrdersDirect(10,request),Times.Once);
         }
 
         [Fact]
@@ -68,10 +68,10 @@ namespace eCommerceAPI.Tests.Controller
 
             var responseMock = _fixture.Build<OrderErrorResponseHandler>().With(p => p.State, false).Create();
 
-            _serviceMock.Setup(x => x.PlaceOrder(10, request)).Returns(responseMock);
+            _serviceMock.Setup(x => x.PlaceOrdersDirect(10, request)).Returns(responseMock);
 
             //Act
-            var result = _sut.PlaceOrders(10, request);
+            var result = _sut.PlaceOrdersDirectly(10, request);
             BadRequestObjectResult badResult = result as BadRequestObjectResult;
 
             //Assert
@@ -79,9 +79,9 @@ namespace eCommerceAPI.Tests.Controller
             result.Should().BeAssignableTo<BadRequestObjectResult>();
             result.GetType().Should().Be(typeof(BadRequestObjectResult));
             Assert.Equal(400, badResult.StatusCode);
-            _serviceMock.Verify(x => x.PlaceOrder(10, request), Times.Once);
+            _serviceMock.Verify(x => x.PlaceOrdersDirect(10, request), Times.Once);
         }
-
+      
         [Fact]
         public void UpdateOrdersState_ShouldReturnOkResponse_WhenOrderStateUpdateSuccessfully()
         {

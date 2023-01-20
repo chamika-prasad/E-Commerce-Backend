@@ -16,6 +16,7 @@ namespace Models
         public bool isAdmin { get; set; }
         public string token { get; set; }
         public virtual ICollection<NewOrder> neworders { get; set; }
+        public virtual ICollection<Cart> Carts { get; set; }
 
     }
 }

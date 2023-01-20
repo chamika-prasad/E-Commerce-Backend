@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230116222947_productorderssssss")]
+    partial class productorderssssss
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,18 +36,20 @@ namespace Assignment.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Useremail")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("quantity")
                         .HasColumnType("int");
 
-                    b.Property<string>("userEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("state")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("userEmail");
+                    b.HasIndex("Useremail");
 
                     b.ToTable("Cart");
                 });
@@ -178,9 +183,7 @@ namespace Assignment.Migrations
 
                     b.HasOne("Models.User", "User")
                         .WithMany("Carts")
-                        .HasForeignKey("userEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Useremail");
 
                     b.Navigation("Product");
 
@@ -201,7 +204,7 @@ namespace Assignment.Migrations
             modelBuilder.Entity("Assignment.Model.OrderProduct", b =>
                 {
                     b.HasOne("Assignment.Model.NewOrder", "Order")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -226,11 +229,6 @@ namespace Assignment.Migrations
                         .IsRequired();
 
                     b.Navigation("category");
-                });
-
-            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
-                {
-                    b.Navigation("OrderProducts");
                 });
 
             modelBuilder.Entity("Models.Category", b =>

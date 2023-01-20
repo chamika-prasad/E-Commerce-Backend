@@ -4,6 +4,7 @@ using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assignment.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230116212721_productorderss")]
+    partial class productorderss
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,33 +24,6 @@ namespace Assignment.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Assignment.Model.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("userEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("userEmail");
-
-                    b.ToTable("Cart");
-                });
 
             modelBuilder.Entity("Assignment.Model.NewOrder", b =>
                 {
@@ -168,25 +144,6 @@ namespace Assignment.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Assignment.Model.Cart", b =>
-                {
-                    b.HasOne("Models.Product", "Product")
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.User", "User")
-                        .WithMany("Carts")
-                        .HasForeignKey("userEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Assignment.Model.NewOrder", b =>
                 {
                     b.HasOne("Models.User", "User")
@@ -201,13 +158,13 @@ namespace Assignment.Migrations
             modelBuilder.Entity("Assignment.Model.OrderProduct", b =>
                 {
                     b.HasOne("Assignment.Model.NewOrder", "Order")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.Product", "Product")
-                        .WithMany("OrderProducts")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -228,27 +185,13 @@ namespace Assignment.Migrations
                     b.Navigation("category");
                 });
 
-            modelBuilder.Entity("Assignment.Model.NewOrder", b =>
-                {
-                    b.Navigation("OrderProducts");
-                });
-
             modelBuilder.Entity("Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
-                {
-                    b.Navigation("Carts");
-
-                    b.Navigation("OrderProducts");
-                });
-
             modelBuilder.Entity("Models.User", b =>
                 {
-                    b.Navigation("Carts");
-
                     b.Navigation("neworders");
                 });
 #pragma warning restore 612, 618
