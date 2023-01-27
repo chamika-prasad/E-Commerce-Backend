@@ -8,7 +8,7 @@ namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     public class ProductCategoryController : ControllerBase
     {
         private readonly IProductCategoryService _IProductCategoryService;
@@ -44,7 +44,7 @@ namespace Assignment.Controller
         //Add ProductCategory
 
         [HttpPost("AddProductCategory")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult AddProductCategory(ProductCategoryRequest request)
         {
             var response = _IProductCategoryService.SaveCategory(request);
@@ -55,7 +55,7 @@ namespace Assignment.Controller
         //Update ProductCategory
 
         [HttpPut("UpdateProductCategory/{categoryId}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult UpdatProductCategory(int categoryId, UpdateProductCategoryRequest request)
         {
             var response = _IProductCategoryService.UpdateCategory(categoryId, request);
@@ -66,7 +66,7 @@ namespace Assignment.Controller
         //Delete Productcategory
 
         [HttpDelete("DeleteProductcategory/{categoryId}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult DeleteProductcategory(int categoryId)
         {
             var response = _IProductCategoryService.DeleteCategory(categoryId);

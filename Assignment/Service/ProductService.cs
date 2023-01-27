@@ -16,7 +16,7 @@ namespace Assignment.Service
             _context = context;
         }
 
-        //Get All categories
+        //Get All Products
         public List<Product> GetAllProduct()
         {
             return _context.Products.ToList();
@@ -39,6 +39,8 @@ namespace Assignment.Service
                 return _response;
             }
 
+            var categoryName = _context.Categories.Where(c => c.categoryId == request.categoryId).Select(c => c.name).FirstOrDefault();
+
             try
             {
 
@@ -48,6 +50,8 @@ namespace Assignment.Service
                     description = request.description,
                     stock = request.stock,
                     categoryId = request.categoryId,
+                    categoryName = categoryName,
+                    price = request.price,
 
                 };
 
@@ -169,7 +173,7 @@ namespace Assignment.Service
             return _response;
         }
 
-
+        //search product
         public List<Product> SearchProduct(SearchProductRequest request)
         {
             var categoryId = _context.Categories.Where(c => c.name == request.name).Select(c => c.categoryId).FirstOrDefault();

@@ -5,12 +5,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using System.Data;
+using Assignment.Service;
 
 namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+   // [Authorize(Roles = "Admin")]
     public class OderController : ControllerBase
     {
         private readonly IOrderService _IOrderService;
@@ -47,9 +48,23 @@ namespace Assignment.Controller
 
         }
 
+
+        //Get all products in cart
+
+        [HttpGet("GetAllProductsInCart/{userEmail}")]
+        // [Authorize(Roles = "Admin || Customer")]
+        public IActionResult GetAllProductsInCart(string userEmail)
+        {
+
+            var Response = _IOrderService.GetAllProductsInCart(userEmail);
+
+            return Response.Count == 0 ? BadRequest("No any Product in cart") : Ok(Response);
+
+        }
+
         //add to cart
 
-        [HttpPost("AddToCart/{productId}/{userEmail}")]
+        [HttpPost("AddToCart/{productId}/{userEmail}/{quantity}")]
        // [Authorize(Roles = "Admin || Customer")]
         public IActionResult AddToCart(int productId, string userEmail,int quantity)
         {
@@ -63,7 +78,7 @@ namespace Assignment.Controller
         //Update order state by admin
 
         [HttpPut("UpdateOrderState/{orderId}/{orderState}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult UpdateOrdersState(int orderId, string orderState)
         {
 
@@ -76,7 +91,7 @@ namespace Assignment.Controller
         //Get all orders
 
         [HttpGet("GetAllOrders")]
-        [Authorize(Roles = "Admin")]
+  //      [Authorize(Roles = "Admin")]
         public IActionResult GetAllOrders()
         {
 

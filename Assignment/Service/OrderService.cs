@@ -2,10 +2,12 @@
 using Assignment.Interface;
 using Assignment.Model;
 using Assignment.Request;
+using Azure;
 using Azure.Core;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using ServiceStack.Web;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Assignment.Service
@@ -71,8 +73,18 @@ namespace Assignment.Service
             _context.Products.Update(product);
             _context.SaveChangesAsync();
 
+            Thread.Sleep(2000);
+
             _response = SetResponse(true, "Order placed successful", null, null);
             return _response;
+        }
+
+        //Get all products in cart
+
+        public List<Cart> GetAllProductsInCart(string userEmail)
+        {
+            //return _context.Cart.ToList();
+            return _context.Cart.Where(c => c.userEmail == userEmail).ToList();
         }
 
         //place order using cart
@@ -172,19 +184,23 @@ namespace Assignment.Service
 
         public OrderErrorResponseHandler AddToCart(int productId, string userEmail, int quantity)
         {
-            var stock = _context.Products.Where(p => p.productId == productId).Select(p => p.stock).FirstOrDefault();
+            var product = _context.Products.Where(p => p.productId == productId).Select(p => new { p.name,p.price,p.stock }).FirstOrDefault();
 
-            if(stock < quantity)
+            if (product.stock < quantity)
             {
                 _response = SetResponse(false, "Quantity exeed stock", null, null);
                 return _response;
             }
 
+            var totalPrice = quantity * product.price;
+
             var item = new Cart
             {
                 ProductId= productId,
                 userEmail= userEmail,
-                quantity= quantity
+                quantity= quantity,
+                productName= product.name,
+                totalPrice = totalPrice
             };
 
             _context.Cart.Add(item);
