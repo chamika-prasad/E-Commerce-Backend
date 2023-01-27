@@ -32,7 +32,7 @@ namespace Assignment.Controller
         //Add Product
 
         [HttpPost("AddProduct")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult AddProduct(ProductRequest request)
         {
             var response = _IProductService.SaveProduct(request);
@@ -54,7 +54,7 @@ namespace Assignment.Controller
         //Update Product
 
         [HttpPut("UpdateProduct/{productId}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult UpdatProduct(int productId, UpdateProductRequest request)
         {
             var response = _IProductService.UpdateProduct(productId, request);
@@ -65,7 +65,7 @@ namespace Assignment.Controller
         //Delete Product
 
         [HttpDelete("DeleteProduct/{productId}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
         public IActionResult DeleteProduct(int productId)
         {
             var response = _IProductService.DeleteProduct(productId);

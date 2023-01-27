@@ -13,6 +13,7 @@ namespace Assignment.Interface
         public OrderErrorResponseHandler UpdateOrderState(int orderId, string orderState);
         public OrderErrorResponseHandler AddToCart(int productId, string userEmail,int quantity);
         public List<NewOrder> GetAllOrders();
+        public List<Cart> GetAllProductsInCart(string userEmail);
 
     }
 }

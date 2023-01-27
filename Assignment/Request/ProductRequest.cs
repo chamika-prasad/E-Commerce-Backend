@@ -15,5 +15,8 @@ namespace Assignment.Request
 
         [Required]
         public int categoryId { get; set; }
+
+        [Required]
+        public decimal price { get; set; }
     }
 }
