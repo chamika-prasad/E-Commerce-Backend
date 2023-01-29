@@ -37,12 +37,13 @@ namespace Assignment.Controller
 
         //place order using cart
 
-        [HttpPost("PlaceOrderInCart")]
-       // [Authorize(Roles = "Admin || Customer")]
-        public IActionResult PlaceOrdersByCart([FromBody] List<int> cartIds, string userEmail)
+        [HttpPost("PlaceOrderInCart/{userEmail}")]
+        // [Authorize(Roles = "Admin || Customer")]
+        // public IActionResult PlaceOrdersByCart([FromBody] List<int> cartIds, string userEmail)
+        public IActionResult PlaceOrdersByCart(List<int> cartIds, string userEmail)
         {
 
-            var Response = _IOrderService.PlaceOrdersByCart(cartIds, userEmail);
+            var Response = _IOrderService.PlaceOrdersByCart(cartIds, userEmail); 
 
             return Response.State == false ? BadRequest(Response) : Ok(Response);
 

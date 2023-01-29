@@ -46,7 +46,7 @@ namespace Assignment.Service
                 _context.Users.Add(user);
                 _context.SaveChangesAsync();
 
-                _response = SetResponse(true, "User added successfully","Customer", user);
+                _response = SetResponse(true, "Registration successfull","Customer", user);
 
 
             }
