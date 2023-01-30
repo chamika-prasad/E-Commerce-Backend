@@ -37,6 +37,45 @@ namespace Assignment.Service
                 return _response;
             }
 
+
+            //.......................................................
+            //check cart
+
+            var cartStock = _context.Cart.Where(c => c.ProductId == productId).Select(c => new { c.productName, c.quantity, c.Id }).FirstOrDefault();
+
+            if (cartStock.productName != null)
+            {
+
+                if(stock == 0)
+                {
+                    var cartProduct = _context.Cart.Find(cartStock.Id);
+
+                    _context.Cart.Remove(cartProduct);
+                    _context.SaveChangesAsync();
+                    Thread.Sleep(2000);
+
+                }else if(stock < cartStock.quantity)
+                {
+                    var cartProduct = _context.Cart.Find(cartStock.Id);
+
+                    cartProduct.quantity = stock;
+                    _context.Cart.Update(cartProduct);
+                    _context.SaveChangesAsync();
+                    Thread.Sleep(2000);
+                }
+
+                
+            }
+
+
+            
+
+
+            //...........................................................
+
+
+
+
             var date = DateTime.Now;
 
             var order = new NewOrder
@@ -50,6 +89,7 @@ namespace Assignment.Service
             _context.SaveChangesAsync();
 
             Thread.Sleep(1000);
+
 
             var oderId = _context.NewOrders.Where(o => o.date == date && o.userEmail == request.userEmail && o.state == State.Pending).Select(o => o.Id).FirstOrDefault();
 
@@ -184,6 +224,14 @@ namespace Assignment.Service
 
         public OrderErrorResponseHandler AddToCart(int productId, string userEmail, int quantity)
         {
+            var cartProduct = _context.Cart.Where(c => c.ProductId == productId && c.userEmail == userEmail).Select(c => c.Id).FirstOrDefault();
+
+            if(cartProduct != 0)
+            {
+                _response = SetResponse(false, "Item already in cart", null, null);
+                return _response;
+            }
+
             var product = _context.Products.Where(p => p.productId == productId).Select(p => new { p.name,p.price,p.stock }).FirstOrDefault();
 
             if (product.stock < quantity)
