@@ -11,7 +11,7 @@ namespace Assignment.Controller
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class OderController : ControllerBase
     {
         private readonly IOrderService _IOrderService;
